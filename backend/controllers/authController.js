@@ -1,5 +1,10 @@
 const prisma = require("../config/prisma");
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const {
+  createAccessToken,
+  createRefreshToken,
+} = require("../utils/createToken");
 
 exports.login = async (req, res) => {
   const { email, password } = req.body;
@@ -17,7 +22,30 @@ exports.login = async (req, res) => {
     if (!isMatch)
       return res.status(401).json({ message: "Incorrect email or password" });
 
-    res.json({ message: "Successfully logged in!" });
+    const payload = {
+      sub: user.id,
+      username: user.username,
+      email: user.email,
+      tokenVersion: user.tokenVersion,
+    };
+
+    const accessToken = createAccessToken(payload);
+    const refreshToken = createRefreshToken(payload.sub);
+
+    res.cookie("jid", refreshToken, {
+      httpOnly: true,
+      path: "/auth",
+      secure: true,
+      sameSite: "none",
+      maxAge: 1000 * 60 * 60 * 24 * 7,
+    });
+
+    res.json({
+      message: "Successfully logged in!",
+      accessToken,
+      refreshToken,
+      payload,
+    });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server error" });
@@ -48,4 +76,74 @@ exports.signup = async (req, res) => {
     console.error(err);
     res.status(500).json({ message: "Server error" });
   }
+};
+
+exports.refreshToken = async (req, res) => {
+  const token = req.cookies.jid;
+
+  if (!token) return res.json({ message: "No refresh token." });
+
+  let payload = null;
+  try {
+    payload = jwt.verify(token, process.env.REFRESH_TOKEN);
+  } catch (err) {
+    console.log(err);
+    res.status(403).json({ message: "Invalid refresh token." });
+  }
+
+  const user = await prisma.user.findUnique({ where: { id: payload.sub } });
+  if (!user) return res.status(404).json({ message: "User not found." });
+
+  const userPayload = {
+    sub: user.id,
+    username: user.username,
+    email: user.email,
+    tokenVersion: user.tokenVersion,
+  };
+
+  const accessToken = createAccessToken(userPayload);
+  const refreshToken = createRefreshToken(userPayload.sub);
+
+  res.cookie("jid", refreshToken, {
+    httpOnly: true,
+    path: "/auth",
+    secure: true,
+    sameSite: "none",
+    maxAge: 1000 * 60 * 60 * 24 * 7,
+  });
+
+  res.json({ message: "Token has been renewed", accessToken });
+};
+
+exports.logout = async (req, res) => {
+  const token = req.cookies.jid;
+
+  if (!token) {
+    return res.status(401).json({ message: "No refresh token cookie." });
+  }
+
+  let payload;
+  try {
+    payload = jwt.verify(token, process.env.REFRESH_TOKEN);
+  } catch (err) {
+    return res.status(401).json({ message: "Invalid refresh token." });
+  }
+
+  try {
+    await prisma.user.update({
+      where: { id: payload.sub },
+      data: { tokenVersion: { increment: 1 } },
+    });
+  } catch (err) {
+    console.error("Prisma error:", err);
+    return res.status(500).json({ message: "Database update failed." });
+  }
+
+  res.clearCookie("jid", {
+    httpOnly: true,
+    path: "/auth",
+    secure: true,
+    sameSite: "none",
+  });
+  res.json({ message: "Logged out successfully!" });
 };
