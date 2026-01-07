@@ -35,7 +35,7 @@ exports.login = async (req, res) => {
     res.cookie("jid", refreshToken, {
       httpOnly: true,
       path: "/auth",
-      secure: true,
+      secure: false,
       sameSite: "none",
       maxAge: 1000 * 60 * 60 * 24 * 7,
     });
@@ -107,7 +107,7 @@ exports.refreshToken = async (req, res) => {
   res.cookie("jid", refreshToken, {
     httpOnly: true,
     path: "/auth",
-    secure: true,
+    secure: false,
     sameSite: "none",
     maxAge: 1000 * 60 * 60 * 24 * 7,
   });
@@ -126,7 +126,17 @@ exports.logout = async (req, res) => {
   try {
     payload = jwt.verify(token, process.env.REFRESH_TOKEN);
   } catch (err) {
+    res.clearCookie("jid", { path: "/auth" });
     return res.status(401).json({ message: "Invalid refresh token." });
+  }
+
+  const user = await prisma.user.findUnique({
+    where: { id: payload.sub },
+  });
+
+  if (!user || payload.tokenVersion !== user.tokenVersion) {
+    res.clearCookie("jid", { path: "/auth" });
+    return res.sendStatus(204);
   }
 
   try {
@@ -142,7 +152,7 @@ exports.logout = async (req, res) => {
   res.clearCookie("jid", {
     httpOnly: true,
     path: "/auth",
-    secure: true,
+    secure: false, // true in production
     sameSite: "none",
   });
   res.json({ message: "Logged out successfully!" });
