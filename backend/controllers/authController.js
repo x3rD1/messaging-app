@@ -36,7 +36,7 @@ exports.login = async (req, res) => {
       httpOnly: true,
       path: "/auth",
       secure: false,
-      sameSite: "none",
+      sameSite: "lax",
       maxAge: 1000 * 60 * 60 * 24 * 7,
     });
 
@@ -108,7 +108,7 @@ exports.refreshToken = async (req, res) => {
     httpOnly: true,
     path: "/auth",
     secure: false,
-    sameSite: "none",
+    sameSite: "lax",
     maxAge: 1000 * 60 * 60 * 24 * 7,
   });
 
@@ -153,7 +153,7 @@ exports.logout = async (req, res) => {
     httpOnly: true,
     path: "/auth",
     secure: false, // true in production
-    sameSite: "none",
+    sameSite: "lax",
   });
   res.json({ message: "Logged out successfully!" });
 };
