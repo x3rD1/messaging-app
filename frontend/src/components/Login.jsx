@@ -1,6 +1,7 @@
 import { useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import AuthContext from "../context/AuthContext";
+import styles from "./Login.module.css";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -10,14 +11,15 @@ function Login() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (accessToken) {
-      navigate("/", { replace: true });
-    }
-    console.log(accessToken);
+    if (accessToken) navigate("/", { replace: true });
   }, [accessToken, navigate]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className={styles.wrapper}>
+        <div className={styles.card}>Loading…</div>
+      </div>
+    );
   }
 
   const handleSubmit = async (e) => {
@@ -40,32 +42,48 @@ function Login() {
       setError(err.message);
     }
   };
+
   return (
-    <>
-      <div>Welcome to login!</div>
-      <form onSubmit={handleSubmit}>
-        {error && <p style={{ color: "red" }}>{error}</p>}
-        <div>
-          <label>Email: </label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </div>
-        <div>
-          <label>Password: </label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </div>
-        <button type="submit">Login</button>
-      </form>
-    </>
+    <div className={styles.wrapper}>
+      <div className={styles.card}>
+        <h1 className={styles.title}>Login</h1>
+
+        <form onSubmit={handleSubmit}>
+          {error && <p className={styles.error}>{error}</p>}
+
+          <div className={styles.field}>
+            <label className={styles.label}>Email</label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              onFocus={() => setError("")}
+              required
+              className={styles.input}
+            />
+          </div>
+
+          <div className={styles.field}>
+            <label className={styles.label}>Password</label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              onFocus={() => setError("")}
+              required
+              className={styles.input}
+            />
+          </div>
+
+          <button type="submit" className={styles.button}>
+            Login
+          </button>
+        </form>
+      </div>
+      <p className={styles.signupPrompt}>
+        Don't have an account yet? <a href="/signup">Sign up</a>
+      </p>
+    </div>
   );
 }
 
