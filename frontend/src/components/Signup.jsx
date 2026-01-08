@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./Signup.module.css";
+import AuthContext from "../context/AuthContext";
 
 function Signup() {
   const [user, setUser] = useState({
@@ -11,14 +12,27 @@ function Signup() {
   });
   const [errors, setErrors] = useState({});
   const [formError, setFormError] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [loadingSignup, setLoadingSignup] = useState(false);
+  const { accessToken, loading } = useContext(AuthContext);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (accessToken) navigate("/", { replace: true });
+  }, [accessToken, navigate]);
+
+  if (loading) {
+    return (
+      <div className={styles.wrapper}>
+        <div className={styles.card}>Loading…</div>
+      </div>
+    );
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrors({});
-    if (loading) return;
-    setLoading(true);
+    if (loadingSignup) return;
+    setLoadingSignup(true);
     try {
       const res = await fetch("http://localhost:3000/auth/signup", {
         method: "POST",
@@ -40,11 +54,11 @@ function Signup() {
             if (!fieldErrors[err.path]) fieldErrors[err.path] = err.msg;
           });
           setErrors(fieldErrors);
-          setLoading(false);
+          setLoadingSignup(false);
         }
         throw new Error(data.message);
       }
-      setLoading(false);
+      setLoadingSignup(false);
       if (!data.errors) navigate("/login");
     } catch (err) {
       console.log(err);
@@ -121,8 +135,12 @@ function Signup() {
             )}
           </div>
 
-          <button type="submit" disabled={loading} className={styles.button}>
-            {loading ? "Creating…" : "Create account"}
+          <button
+            type="submit"
+            disabled={loadingSignup}
+            className={styles.button}
+          >
+            {loadingSignup ? "Creating…" : "Create account"}
           </button>
         </form>
 
