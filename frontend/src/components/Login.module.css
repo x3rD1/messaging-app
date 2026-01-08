@@ -1,0 +1,119 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.wrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #f5f0ff 0%, #e5daf7 100%);
+  font-family: "Inter", system-ui, sans-serif;
+}
+
+.card {
+  width: 100%;
+  max-width: 400px;
+  padding: 3rem 2.5rem;
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(12px);
+  border-radius: 24px;
+  box-shadow: 0 12px 40px rgba(136, 78, 224, 0.18);
+  text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.title {
+  margin-bottom: 2rem;
+  font-size: 1.9rem;
+  font-weight: 700;
+  background: linear-gradient(90deg, #8e44e6, #b37cf5);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.field {
+  margin-bottom: 1.25rem;
+  text-align: left;
+}
+
+.label {
+  display: block;
+  margin-bottom: 0.4rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #7b3fe4;
+}
+
+.input {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid #d9c5ff;
+  border-radius: 12px;
+  color: #4c2885;
+  font-size: 1rem;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.input:focus {
+  background: #ffffff;
+  border-color: #8e44e6;
+  box-shadow: 0 0 0 3px rgba(142, 68, 230, 0.25);
+}
+
+.error {
+  margin: 0 0 1rem;
+  font-size: 0.8rem;
+  color: #d93025;
+}
+
+.button {
+  width: 100%;
+  padding: 0.8rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #ffffff;
+  background: linear-gradient(90deg, #8e44e6, #a96fe5);
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(142, 68, 230, 0.35);
+  transition: all 0.2s ease;
+}
+
+.button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 22px rgba(142, 68, 230, 0.45);
+}
+
+.button:active {
+  transform: translateY(0);
+}
+
+.signupPrompt {
+  margin-top: 1.5rem;
+  font-size: clamp(0.8rem, 2vw, 0.9rem);
+  color: #6b4f96;
+}
+
+.signupPrompt a {
+  color: #8e44e6;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.signupPrompt a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 640px) {
+  .card {
+    padding: 1.8rem;
+  }
+}
