@@ -3,6 +3,7 @@ import AuthContext from "./AuthContext";
 
 function AuthProvider({ children }) {
   const [accessToken, setAccessToken] = useState(null);
+  const [userInfo, setUserInfo] = useState({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -17,12 +18,15 @@ function AuthProvider({ children }) {
         if (!res.ok) {
           setAccessToken(null);
           setLoading(false);
+          setUserInfo({});
           return;
         }
 
         if (data.accessToken) {
           setAccessToken(data.accessToken);
         }
+        setUserInfo(data.userPayload);
+        setLoading(false);
       } catch (err) {
         console.error("Session restore failed:", err);
       } finally {
@@ -35,9 +39,12 @@ function AuthProvider({ children }) {
 
   const login = (token) => setAccessToken(token);
   const logout = () => setAccessToken(null);
+  const user = (payload) => setUserInfo(payload);
 
   return (
-    <AuthContext.Provider value={{ accessToken, login, logout, loading }}>
+    <AuthContext.Provider
+      value={{ accessToken, login, logout, loading, userInfo, user }}
+    >
       {children}
     </AuthContext.Provider>
   );
