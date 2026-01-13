@@ -34,16 +34,19 @@ function Signup() {
     if (loadingSignup) return;
     setLoadingSignup(true);
     try {
-      const res = await fetch("http://localhost:3000/auth/signup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          username: user.username,
-          email: user.email,
-          password: user.password,
-          confirmPassword: user.confirmPassword,
-        }),
-      });
+      const res = await fetch(
+        "https://messaging-app-production-8a6f.up.railway.app/auth/signup",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            username: user.username,
+            email: user.email,
+            password: user.password,
+            confirmPassword: user.confirmPassword,
+          }),
+        }
+      );
 
       const data = await res.json();
 

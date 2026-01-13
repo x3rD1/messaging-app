@@ -3,7 +3,7 @@ import { useState, useEffect, useContext } from "react";
 import AuthContext from "../context/AuthContext";
 import styles from "./Socket.module.css";
 
-const socket = io("http://localhost:3000", {
+const socket = io("https://messaging-app-production-8a6f.up.railway.app", {
   withCredentials: true,
   autoConnect: false,
 });
@@ -55,7 +55,7 @@ function Users({ setUser, setRoomId, setMessages }) {
   useEffect(() => {
     if (loading || !accessToken) return;
 
-    fetch("http://localhost:3000/users/all", {
+    fetch("https://messaging-app-production-8a6f.up.railway.app/users/all", {
       credentials: "include",
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -70,15 +70,18 @@ function Users({ setUser, setRoomId, setMessages }) {
     setUser((prev) => ({ ...prev, id, name }));
 
     try {
-      const res = await fetch("http://localhost:3000/chat/direct", {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ id: userInfo.sub, otherId: id }),
-      });
+      const res = await fetch(
+        "https://messaging-app-production-8a6f.up.railway.app/chat/direct",
+        {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ id: userInfo.sub, otherId: id }),
+        }
+      );
 
       if (!res.ok) throw new Error("Error getting roomId");
 
@@ -93,7 +96,7 @@ function Users({ setUser, setRoomId, setMessages }) {
   const getAllMessages = async (id, roomId, setMessages) => {
     try {
       const res = await fetch(
-        `http://localhost:3000/users/${id}/chat/${roomId}/messages`,
+        `https://messaging-app-production-8a6f.up.railway.app/users/${id}/chat/${roomId}/messages`,
         {
           credentials: "include",
           headers: { Authorization: `Bearer ${accessToken}` },
@@ -120,10 +123,13 @@ function Users({ setUser, setRoomId, setMessages }) {
 
   const handleLogout = async () => {
     try {
-      fetch("http://localhost:3000/auth/logout", {
-        method: "POST",
-        credentials: "include",
-      }).then(logout);
+      fetch(
+        "https://messaging-app-production-8a6f.up.railway.app/auth/logout",
+        {
+          method: "POST",
+          credentials: "include",
+        }
+      ).then(logout);
     } catch (err) {
       console.log(err);
     }
@@ -232,7 +238,7 @@ function Convo({ user, roomId, messages, setMessages }) {
 
     try {
       const res = await fetch(
-        `http://localhost:3000/users/${user.id}/chat/${roomId}/message/create`,
+        `https://messaging-app-production-8a6f.up.railway.app/users/${user.id}/chat/${roomId}/message/create`,
         {
           method: "POST",
           headers: {

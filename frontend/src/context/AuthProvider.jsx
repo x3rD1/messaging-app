@@ -9,10 +9,13 @@ function AuthProvider({ children }) {
   useEffect(() => {
     async function restore() {
       try {
-        const res = await fetch("http://localhost:3000/auth/token/refresh", {
-          method: "POST",
-          credentials: "include",
-        });
+        const res = await fetch(
+          "https://messaging-app-production-8a6f.up.railway.app/auth/token/refresh",
+          {
+            method: "POST",
+            credentials: "include",
+          }
+        );
 
         const data = await res.json();
         if (!res.ok) {
