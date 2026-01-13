@@ -1,25 +1,25 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./components/Login";
-import ProtectedRoute from "./components/ProtectedRoute";
 import Signup from "./components/Signup";
+import Socket from "./components/Socket";
+import ProtectedRoute from "./components/ProtectedRoute";
 
-function Router() {
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route
-          path="/"
-          element={
-            <ProtectedRoute>
-              <h1>Welcome!</h1>
-            </ProtectedRoute>
-          }
-        />
-        <Route path="/signup" element={<Signup />} />
-      </Routes>
-    </BrowserRouter>
-  );
-}
+const routes = [
+  {
+    path: "/",
+    element: (
+      <ProtectedRoute>
+        <Socket />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/login",
+    element: <Login />,
+  },
+  {
+    path: "/signup",
+    element: <Signup />,
+  },
+];
 
-export default Router;
+export default routes;
