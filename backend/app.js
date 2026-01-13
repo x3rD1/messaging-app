@@ -8,7 +8,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: "https://messaging-app-umber.vercel.app",
     credentials: true,
   })
 );
