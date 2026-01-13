@@ -112,7 +112,7 @@ exports.refreshToken = async (req, res) => {
     maxAge: 1000 * 60 * 60 * 24 * 7,
   });
 
-  res.json({ message: "Token has been renewed", accessToken });
+  res.json({ message: "Token has been renewed", accessToken, userPayload });
 };
 
 exports.logout = async (req, res) => {
