@@ -7,7 +7,7 @@ function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
-  const { login, accessToken, loading } = useContext(AuthContext);
+  const { login, accessToken, loading, user } = useContext(AuthContext);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -38,6 +38,7 @@ function Login() {
       if (!res.ok) throw new Error(data.message);
 
       login(data.accessToken);
+      user(data.payload);
     } catch (err) {
       setError(err.message);
     }
