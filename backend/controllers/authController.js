@@ -35,8 +35,8 @@ exports.login = async (req, res) => {
     res.cookie("jid", refreshToken, {
       httpOnly: true,
       path: "/auth",
-      secure: false,
-      sameSite: "lax",
+      secure: true,
+      sameSite: "none",
       maxAge: 1000 * 60 * 60 * 24 * 7,
     });
 
@@ -107,8 +107,8 @@ exports.refreshToken = async (req, res) => {
   res.cookie("jid", refreshToken, {
     httpOnly: true,
     path: "/auth",
-    secure: false,
-    sameSite: "lax",
+    secure: true,
+    sameSite: "none",
     maxAge: 1000 * 60 * 60 * 24 * 7,
   });
 
@@ -152,8 +152,8 @@ exports.logout = async (req, res) => {
   res.clearCookie("jid", {
     httpOnly: true,
     path: "/auth",
-    secure: false, // true in production
-    sameSite: "lax",
+    secure: true, // true in production
+    sameSite: "none",
   });
   res.json({ message: "Logged out successfully!" });
 };
