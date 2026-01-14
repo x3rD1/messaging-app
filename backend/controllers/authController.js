@@ -138,12 +138,14 @@ exports.logout = async (req, res) => {
     where: { id: payload.sub },
   });
 
+  console.log("LOGOUT cookies:", req.cookies);
+  console.log("LOGOUT payload:", payload);
+  console.log("LOGOUT user.tokenVersion:", user.tokenVersion);
+
   if (!user || payload.tokenVersion !== user.tokenVersion) {
     res.clearCookie("jid", { path: "/auth" });
     return res.sendStatus(204);
   }
-
-  console.log("LOGOUT cookies:", req.cookies);
 
   try {
     await prisma.user.update({
