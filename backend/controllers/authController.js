@@ -94,6 +94,10 @@ exports.refreshToken = async (req, res) => {
   const user = await prisma.user.findUnique({ where: { id: payload.sub } });
   if (!user) return res.status(404).json({ message: "User not found." });
 
+  if (payload.tokenVersion !== user.tokenVersion) {
+    return res.sendStatus(401);
+  }
+
   const userPayload = {
     sub: user.id,
     username: user.username,
