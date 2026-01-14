@@ -123,15 +123,21 @@ function Users({ setUser, setRoomId, setMessages }) {
 
   const handleLogout = async () => {
     try {
-      fetch(
+      const res = await fetch(
         "https://messaging-app-production-8a6f.up.railway.app/auth/logout",
         {
           method: "POST",
           credentials: "include",
         }
-      ).then(logout);
+      );
+
+      if (!res.ok) {
+        throw new Error("Logout failed");
+      }
+
+      logout();
     } catch (err) {
-      console.log(err);
+      console.error("Logout error:", err);
     }
   };
 
