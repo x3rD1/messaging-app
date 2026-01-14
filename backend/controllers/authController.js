@@ -30,7 +30,7 @@ exports.login = async (req, res) => {
     };
 
     const accessToken = createAccessToken(payload);
-    const refreshToken = createRefreshToken(payload.sub);
+    const refreshToken = createRefreshToken(user);
 
     res.cookie("jid", refreshToken, {
       httpOnly: true,
@@ -106,7 +106,7 @@ exports.refreshToken = async (req, res) => {
   };
 
   const accessToken = createAccessToken(userPayload);
-  const refreshToken = createRefreshToken(userPayload.sub);
+  const refreshToken = createRefreshToken(user);
 
   res.cookie("jid", refreshToken, {
     httpOnly: true,
