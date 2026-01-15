@@ -2,6 +2,7 @@ import { io } from "socket.io-client";
 import { useState, useEffect, useContext, useRef } from "react";
 import AuthContext from "../context/AuthContext";
 import styles from "./Socket.module.css";
+import Settings from "./Settings";
 
 const socket = io("https://messaging-app-production-8a6f.up.railway.app", {
   withCredentials: true,
@@ -14,7 +15,8 @@ function Socket() {
   const [messages, setMessages] = useState([]);
   const [isMobile, setIsMobile] = useState(false);
   const [showChat, setShowChat] = useState(false);
-  const { accessToken } = useContext(AuthContext);
+  const { accessToken, userInfo } = useContext(AuthContext);
+  const [isSettings, SetIsSettings] = useState(false);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -53,20 +55,28 @@ function Socket() {
 
   return (
     <div className={styles.container}>
+      {isSettings && (
+        <div className={styles.backdrop} onClick={() => SetIsSettings(false)} />
+      )}
+
       <div
         className={`${styles.sidebar} ${
           isMobile && showChat ? styles.hidden : ""
-        }`}
+        } ${isSettings ? styles.blurred : ""}`}
       >
         <Users
           setUser={handleUserSelect}
           setRoomId={setRoomId}
           setMessages={setMessages}
+          SetIsSettings={SetIsSettings}
           selectedUser={user}
         />
       </div>
+
       {(!isMobile || showChat) && (
-        <div className={styles.chatArea}>
+        <div
+          className={`${styles.chatArea} ${isSettings ? styles.blurred : ""}`}
+        >
           <Convo
             user={user}
             roomId={roomId}
@@ -77,13 +87,23 @@ function Socket() {
           />
         </div>
       )}
+
+      {isSettings && (
+        <Settings userInfo={userInfo} onClose={() => SetIsSettings(false)} />
+      )}
     </div>
   );
 }
 
 export default Socket;
 
-function Users({ setUser, setRoomId, setMessages, selectedUser }) {
+function Users({
+  setUser,
+  setRoomId,
+  setMessages,
+  selectedUser,
+  SetIsSettings,
+}) {
   const [users, setUsers] = useState([]);
   const [recentMessages, setRecentMessages] = useState({});
   const { accessToken, loading, userInfo, logoutUser } =
@@ -188,7 +208,7 @@ function Users({ setUser, setRoomId, setMessages, selectedUser }) {
   };
 
   const handleSettings = () => {
-    console.log("Settings clicked");
+    SetIsSettings(true);
   };
 
   return (
@@ -235,7 +255,6 @@ function Users({ setUser, setRoomId, setMessages, selectedUser }) {
         })}
       </div>
 
-      {/* Bottom bar with settings and logout */}
       <div className={styles.bottomBar}>
         <button
           className={styles.settingsButton}
