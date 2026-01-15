@@ -10,7 +10,7 @@ function Settings({ userInfo, onClose }) {
   const handleSaveEmail = async (newEmail) => {
     try {
       const res = await fetch(
-        `http://localhost:3000/users/${userInfo.sub}/update`,
+        `https://messaging-app-production-8a6f.up.railway.app/users/${userInfo.sub}/update`,
         {
           method: "POST",
           headers: {
