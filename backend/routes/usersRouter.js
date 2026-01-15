@@ -14,5 +14,9 @@ usersRouter.post(
   authenticateToken,
   usersController.createMessage
 );
-
+usersRouter.post(
+  "/:userId/update",
+  authenticateToken,
+  usersController.updateUserEmail
+);
 module.exports = usersRouter;
