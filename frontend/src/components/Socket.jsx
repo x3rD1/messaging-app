@@ -70,6 +70,8 @@ function Socket() {
           setMessages={setMessages}
           SetIsSettings={SetIsSettings}
           selectedUser={user}
+          setShowChat={setShowChat}
+          isMobile={isMobile}
         />
       </div>
 
@@ -103,6 +105,8 @@ function Users({
   setMessages,
   selectedUser,
   SetIsSettings,
+  setShowChat,
+  isMobile,
 }) {
   const [users, setUsers] = useState([]);
   const [recentMessages, setRecentMessages] = useState({});
@@ -143,6 +147,10 @@ function Users({
 
   const handleClick = async (id, name) => {
     setUser({ id, name });
+
+    if (isMobile) {
+      setShowChat(true);
+    }
 
     try {
       const res = await fetch(
