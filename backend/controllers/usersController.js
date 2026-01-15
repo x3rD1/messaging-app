@@ -44,3 +44,31 @@ exports.createMessage = async (req, res) => {
     console.log(err);
   }
 };
+
+exports.updateUserEmail = async (req, res) => {
+  const id = Number(req.params.userId);
+  const { email } = req.body;
+
+  if (!email) {
+    return res.status(400).json({ message: "Email is required" });
+  }
+
+  try {
+    const updatedUser = await prisma.user.update({
+      where: { id },
+      data: { email },
+    });
+
+    return res.json(updatedUser);
+  } catch (error) {
+    if (error.code === "P2025") {
+      return res.status(404).json({ message: "User does not exist" });
+    }
+
+    if (error.code === "P2002") {
+      return res.status(409).json({ message: "Email already in use" });
+    }
+
+    return res.status(500).json({ message: "Something went wrong" });
+  }
+};
