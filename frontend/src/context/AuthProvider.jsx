@@ -41,12 +41,26 @@ function AuthProvider({ children }) {
   }, []);
 
   const login = (token) => setAccessToken(token);
-  const logout = () => setAccessToken(null);
+  const logoutUser = async () => {
+    try {
+      const res = await fetch(
+        "https://messaging-app-production-8a6f.up.railway.app/auth/logout",
+        { method: "post", credentials: "include" }
+      );
+      const data = await res.json();
+
+      if (!res.ok) throw new Error(data.message);
+      setAccessToken(null);
+      setUserInfo({});
+    } catch (err) {
+      console.log("Failed to logout", err);
+    }
+  };
   const user = (payload) => setUserInfo(payload);
 
   return (
     <AuthContext.Provider
-      value={{ accessToken, login, logout, loading, userInfo, user }}
+      value={{ accessToken, login, logoutUser, loading, userInfo, user }}
     >
       {children}
     </AuthContext.Provider>
