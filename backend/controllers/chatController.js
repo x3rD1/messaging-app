@@ -6,9 +6,23 @@ exports.getOrCreateRoomId = async (req, res) => {
   let room = await prisma.conversation.findFirst({
     where: {
       type: "DIRECT",
-      users: {
-        every: { id: { in: [id, otherId] } },
-      },
+      AND: [
+        {
+          users: {
+            some: { id },
+          },
+        },
+        {
+          users: {
+            some: { id: otherId },
+          },
+        },
+        {
+          users: {
+            every: { id: { in: [id, otherId] } },
+          },
+        },
+      ],
     },
   });
 
